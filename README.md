@@ -12,6 +12,26 @@ Gradle:
 compile 'com.github.akarnokd:rxjava-completable:1.0.0'
 ```
 
+Gradle with ignoring the referenced RxJava version
+
+compile ('com.github.akarnokd:rxjava-completable:1.0.0') {
+    exclude module: 'rxjava'
+}
+
+Ivy:
+
+```xml
+<dependency org="com.github.akarnokd" name="ixjava" rev='1.0.0'/>
+```
+
+Ivy with ignoring the referenced RxJava version:
+
+```xml
+<dependency org="com.github.akarnokd" name="ixjava" rev='1.0.0'>
+    <exclude name="rxjava"/>
+</dependency>
+```
+
 Releases
 --------
 
