@@ -23,13 +23,13 @@ compile ('com.github.akarnokd:rxjava-completable:1.0.0') {
 Ivy:
 
 ```xml
-<dependency org="com.github.akarnokd" name="ixjava" rev='1.0.0'/>
+<dependency org="com.github.akarnokd" name="rxjava-completable" rev='1.0.0'/>
 ```
 
 Ivy with ignoring the referenced RxJava version:
 
 ```xml
-<dependency org="com.github.akarnokd" name="ixjava" rev='1.0.0'>
+<dependency org="com.github.akarnokd" name="rxjava-completable" rev='1.0.0'>
     <exclude name="rxjava"/>
 </dependency>
 ```
