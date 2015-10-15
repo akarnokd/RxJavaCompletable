@@ -471,7 +471,7 @@ public final class Completable {
     /**
      * Returns a Completable instance that runs the given Action0 for each subscriber and
      * emits either an unchecked exception or simply completes.
-     * @param run the runnable to run for each subscriber
+     * @param action the runnable to run for each subscriber
      * @return the new Completable instance
      * @throws NullPointerException if run is null
      */
@@ -722,8 +722,10 @@ public final class Completable {
      * observable or any of the inner Completables until all of
      * them terminate in a way or another.
      * @param sources the sequence of Completables
+     * @param maxConcurrency the maximum number of concurrently running Completables, positive
      * @return the new Completable instance
      * @throws NullPointerException if sources is null
+     * @throws IllegalArgumentException if maxConcurrency is non-positive
      */
     public static Completable mergeDelayError(Observable<? extends Completable> sources, int maxConcurrency) {
         return merge0(sources, maxConcurrency, true);
@@ -755,6 +757,7 @@ public final class Completable {
      * @param delay the delay time
      * @param unit the delay unit
      * @return the new Completable instance
+     * @throws NullPointerException if unit is null
      */
     public static Completable timer(long delay, TimeUnit unit) {
         return timer(delay, unit, Schedulers.computation());
@@ -765,7 +768,9 @@ public final class Completable {
      * by using the supplied scheduler.
      * @param delay the delay time
      * @param unit the delay unit
+     * @param scheduler the target scheduler where the timer will fire the completion
      * @return the new Completable instance
+     * @throws NullPointerException if unit or scheduler is null
      */
     public static Completable timer(final long delay, final TimeUnit unit, final Scheduler scheduler) {
         requireNonNull(unit);
@@ -810,6 +815,7 @@ public final class Completable {
      * <p>
      * This overload performs an eager unsubscription before the terminal event is emitted.
      * 
+     * @param <R> the resource type
      * @param resourceFunc0 the supplier that returns a resource to be managed. 
      * @param completableFunc1 the function that given a resource returns a Completable instance that will be subscribed to
      * @param disposer the consumer that disposes the resource created by the resource supplier
@@ -829,6 +835,7 @@ public final class Completable {
      * If this overload performs a lazy unsubscription after the terminal event is emitted.
      * Exceptions thrown at this time will be delivered to RxJavaPlugins only.
      * 
+     * @param <R> the resource type
      * @param resourceFunc0 the supplier that returns a resource to be managed
      * @param completableFunc1 the function that given a resource returns a non-null
      * Completable instance that will be subscribed to
@@ -1340,6 +1347,8 @@ public final class Completable {
     /**
      * Returns an Observable that first runs this Completable instance and
      * resumes with the given next Observable.
+     * 
+     * @param <T> the type of the Observable values
      * @param next the next Observable to continue
      * @return the new Observable instance
      * @throws NullPointerException if next is null
@@ -1403,6 +1412,8 @@ public final class Completable {
     /**
      * Subscribes to this Completable instance and blocks until it terminates or the specified timeout 
      * ellapses, then returns null for normal termination or the emitted exception if any.
+     * @param timeout the time to wait for the termination of this Completable
+     * @param unit the time unit
      * @return the throwable if this terminated with an error, null otherwise
      * @throws RuntimeException that wraps an InterruptedException if the wait is interrupted or
      * TimeoutException if the specified timeout ellapsed before it
@@ -1764,6 +1775,8 @@ public final class Completable {
     /**
      * Returns an Observable which first delivers the events
      * of the other Observable then runs this Completable.
+
+     * @param <T> the type of the Observable values
      * @param other the other Observable to run first
      * @return the new Observable instance
      * @throws NullPointerException if other is null
@@ -1899,6 +1912,8 @@ public final class Completable {
     /**
      * Subscribes a reactive-streams Subscriber to this Completable instance which
      * will receive only an onError or onComplete event.
+     * 
+     * @param <T> the type of the values to be observed, irrelevant as no values will ever be emitted
      * @param s the reactive-streams Subscriber, not null
      * @throws NullPointerException if s is null
      */
@@ -2043,6 +2058,7 @@ public final class Completable {
     
     /**
      * Allows fluent conversion to another type via a function callback.
+     * @param <U> the result type
      * @param converter the function called with this which should return some other value.
      * @return the converted value
      * @throws NullPointerException if converter is null
@@ -2054,6 +2070,7 @@ public final class Completable {
     /**
      * Returns an Observable which when subscribed to subscribes to this Completable and
      * relays the terminal events to the subscriber.
+     * @param <T> the observed value type
      * @return the new Observable created
      */
     public final <T> Observable<T> toObservable() {
@@ -2068,6 +2085,7 @@ public final class Completable {
     /**
      * Convers this Completable into a Single which when this Completable completes normally,
      * calls the given supplier and emits its returned value through onSuccess.
+     * @param <T> the observed value type
      * @param completionValueFunc0 the value supplier called when this Completable completes normally
      * @return the new Single instance
      * @throws NullPointerException if completionValueFunc0 is null
@@ -2115,6 +2133,7 @@ public final class Completable {
     /**
      * Convers this Completable into a Single which when this Completable completes normally,
      * emits the given value through onSuccess.
+     * @param <T> the observed value type
      * @param completionValue the value to emit when this Completable completes normally
      * @return the new Single instance
      * @throws NullPointerException if completionValue is null
